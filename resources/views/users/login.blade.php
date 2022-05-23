@@ -4,7 +4,7 @@
         <!-- Email input -->
         <div class="form-outline mb-4">
             <label class="form-label" for="email">Email address</label>
-            <input type="email" id="email" class="form-control"/>
+            <input type="email" id="email" class="form-control" />
             <span class="text-danger">
                 <strong id="email-error"></strong>
             </span>
@@ -13,7 +13,7 @@
         <!-- Password input -->
         <div class="form-outline mb-4">
             <label class="form-label" for="password">Password</label>
-            <input type="password" id="password" class="form-control"/>
+            <input type="password" id="password" class="form-control" />
             <span class="text-danger">
                 <strong id="password-error"></strong>
             </span>
@@ -56,41 +56,41 @@
                         password: $("#password").val(),
                     },
                 }).done(function(token) {
-                    if(token.error){
+                    if (token.error) {
                         $('#email-error').html(token.error.email);
                         $('#password-error').html(token.error.password);
-                    }
-                   else{
+                    } else {
                         localStorage.setItem("user-token", token.token);
                         window.location = "/api/post-list"
                     }
                 })
             });
-        
+
             $(document).on('click', '.reset-password', function() {
                 $('#forget-modal').modal('show');
                 $("#forget-form").on('submit', function(e) {
                     e.preventDefault();
-                $.ajax({
-                    url:"http://localhost:8000/api/forgot",
-                    method: "POST",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                        'Authorization': 'Bearer ' + token
-                    },
-                    data:{
-                        forgetemail:$('#forgetemail').val()
-                    },
-                    success:function(data){
-                        alert(data.message);
-                        window.location = "/api/login-page/"
-                    },
-                    error:function(err){
-                        console.log("error")
-                    }
-                })
+                    $.ajax({
+                        url: "http://localhost:8000/api/forgot",
+                        method: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                            'Authorization': 'Bearer ' + token
+                        },
+                        data: {
+                            forgetemail: $('#forgetemail').val()
+                        },
+                        success: function(data) {
+                            alert(data.message);
+                            window.location = "/api/login-page/"
+                        },
+                        error: function(err) {
+                            console.log("error")
+                        }
+                    })
 
-            });})
+                });
+            })
         })
     </script>
 @endsection

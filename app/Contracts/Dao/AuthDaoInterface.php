@@ -2,10 +2,9 @@
 
 namespace App\Contracts\Dao;
 
-
 interface AuthDaoInterface
 {
-public function register(array $input);
+  public function register(array $input);
 
-public function login($request);
+  public function login($request);
 }

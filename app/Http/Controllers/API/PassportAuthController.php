@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\User;
-
 use Illuminate\Http\Request;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -29,7 +26,7 @@ class PassportAuthController extends Controller
             'email' => 'required|email',
             'password' => 'required'
         ]);
-        
+
         try {
             if ($validator->fails()) {
                 return response([
@@ -87,9 +84,8 @@ class PassportAuthController extends Controller
 
     public function userInfo()
     {
-
         $user = auth()->user();
-
+        
         return response()->json(['user' => $user], 200);
     }
 

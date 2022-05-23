@@ -54,6 +54,7 @@ class PostController extends Controller
             'title' => 'required',
             'description' => 'required'
         ]);
+
         if ($validator->fails()) {
             return response()->json([
                 "error" => $validator->errors()
@@ -80,6 +81,7 @@ class PostController extends Controller
         if (is_null($post)) {
             return $this->sendError('post not found.');
         }
+
         return response()->json([
             "success" => true,
             "message" => "post retrieved successfully.",

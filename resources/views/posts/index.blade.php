@@ -241,24 +241,24 @@
             });
 
             $("#logout-form").on('submit', function(e) {
-                    e.preventDefault();
-                    $.ajax({
-                        url: "http://localhost:8000/api/logout",
-                        method: "POST",
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                            // 'Authorization': 'Bearer ' + token
-                        },
-                        success: function(data) {
-                            window.localStorage.removeItem("user-token");
-                            alert(data.message);
-                            window.location = "/api/login-page"
-                        },
-                        error: function() {
-                            console.log("error");
-                        }
-                    })
+                e.preventDefault();
+                $.ajax({
+                    url: "http://localhost:8000/api/logout",
+                    method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        // 'Authorization': 'Bearer ' + token
+                    },
+                    success: function(data) {
+                        window.localStorage.removeItem("user-token");
+                        alert(data.message);
+                        window.location = "/api/login-page"
+                    },
+                    error: function() {
+                        console.log("error");
+                    }
                 })
+            })
         });
     </script>
 @endsection
