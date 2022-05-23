@@ -4,13 +4,19 @@
         <!-- Email input -->
         <div class="form-outline mb-4">
             <label class="form-label" for="email">Email address</label>
-            <input type="email" id="email" class="form-control" />
+            <input type="email" id="email" class="form-control"/>
+            <span class="text-danger">
+                <strong id="email-error"></strong>
+            </span>
         </div>
 
         <!-- Password input -->
         <div class="form-outline mb-4">
             <label class="form-label" for="password">Password</label>
-            <input type="password" id="password" class="form-control" />
+            <input type="password" id="password" class="form-control"/>
+            <span class="text-danger">
+                <strong id="password-error"></strong>
+            </span>
         </div>
 
         <!-- Submit button -->
@@ -50,15 +56,17 @@
                         password: $("#password").val(),
                     },
                 }).done(function(token) {
-                    localStorage.setItem("user-token", token.token);
-                    // console.log(localStorage.getItem('user-token'))
-                    window.location = "/api/post-list"
-
-                }).fail(function(err) {
-                    console.log(err.responseJSON.errors);
+                    if(token.error){
+                        $('#email-error').html(token.error.email);
+                        $('#password-error').html(token.error.password);
+                    }
+                   else{
+                        localStorage.setItem("user-token", token.token);
+                        window.location = "/api/post-list"
+                    }
                 })
             });
-
+        
             $(document).on('click', '.reset-password', function() {
                 $('#forget-modal').modal('show');
                 $("#forget-form").on('submit', function(e) {
@@ -77,12 +85,12 @@
                         alert(data.message);
                         window.location = "/api/login-page/"
                     },
-                    error:function(){
+                    error:function(err){
                         console.log("error")
                     }
                 })
-            })
-            })
-        });
+
+            });})
+        })
     </script>
 @endsection

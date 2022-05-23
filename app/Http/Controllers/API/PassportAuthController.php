@@ -2,35 +2,51 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
 
 use Illuminate\Http\Request;
 
-use App\Models\User;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use App\Contracts\Services\AuthServiceInterface;
 
 class PassportAuthController extends Controller
 {
+    private $authService;
+    public function __construct(AuthServiceInterface $authService)
+    {
+        $this->authService = $authService;
+    }
     /**
      * Registration Req
      */
     public function register(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required|min:4',
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'name' => 'required',
             'email' => 'required|email',
-            'password' => 'required|min:8',
+            'password' => 'required'
         ]);
         
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password)
-        ]);
+        try {
+            if ($validator->fails()) {
+                return response([
+                    'error' => $validator->errors()
+                ]);
+            }
+            $user = $this->authService->register($input);
 
-        $token = $user->createToken('Laravel8PassportAuth')->plainTextToken;
-        // return $token;
-        return response()->json(['token' => $token], 200);
+            $token = $user->createToken('Laravel8PassportAuth')->plainTextToken;
+            return response()->json([
+                'token' => $token
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                "error" => $e
+            ]);
+        }
     }
 
     /**
@@ -38,11 +54,19 @@ class PassportAuthController extends Controller
      */
     public function login(Request $request)
     {
-        $data = [
-            'email' => $request->email,
-            'password' => $request->password
-        ];
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => $validator->errors(),
+                'status' => 422
+            ]);
+        }
+        $data = $this->authService->login($request);
         if (auth()->attempt($data)) {
             $token = auth()->user()->createToken('Laravel8PassportAuth')->plainTextToken;
             return response()->json(['token' => $token], 200);

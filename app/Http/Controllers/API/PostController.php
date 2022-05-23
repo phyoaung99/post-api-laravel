@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Post;
-use App\Export\PostsExport;
-use App\Import\PostsImport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
+use App\Contracts\Services\PostServiceInterface;
 
 class PostController extends Controller
 {
+    private $postService;
+    public function __construct(PostServiceInterface $postService)
+    {
+        $this->postService = $postService;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -20,7 +22,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::whereUserId(auth()->user()->id)->latest()->get();
+        $posts = $this->postService->index();
 
         return response()->json([
             "success" => true,
@@ -31,12 +33,7 @@ class PostController extends Controller
 
     public function search(Request $request)
     {
-        $posts = Post::whereUserId(auth()->user()->id)->where(function ($q) use ($request) {
-            if ($request->filled("text")) {
-                $keyword = $request->get('text');
-                $q->where("title", "LIKE", "%{$keyword}%")->orWhere("description", "LIKE", "%{$keyword}%");
-            }
-        })->latest()->get();
+        $posts = $this->postService->search($request);
 
         return response()->json([
             "success" => true,
@@ -62,7 +59,9 @@ class PostController extends Controller
                 "error" => $validator->errors()
             ]);
         }
-        $post = Post::create(array_merge($input, ['user_id' => auth()->user()->id]));
+
+        $post = $this->postService->store($input);
+
         return response()->json([
             "success" => true,
             "message" => "post created successfully.",
@@ -77,7 +76,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::find($id);
+        $post = $this->postService->show($id);
         if (is_null($post)) {
             return $this->sendError('post not found.');
         }
@@ -103,11 +102,13 @@ class PostController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
+            return response()->json([
+                "error" => $validator->errors()
+            ]);
         }
-        $post->title = $input['title'];
-        $post->description = $input['description'];
-        $post->save();
+
+        $post = $this->postService->update($input, $post);
+
         return response()->json([
             "success" => true,
             "message" => "post updated successfully.",
@@ -122,7 +123,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        $post->delete();
+        $post = $this->postService->delete($post);
+
         return response()->json([
             "success" => true,
             "message" => "post deleted successfully.",
@@ -132,9 +134,8 @@ class PostController extends Controller
 
     public function import(Request $request)
     {
-        Post::truncate();
-        $data = $request->file('file');
-        Excel::import(new PostsImport, $data);
+        $this->postService->import($request);
+
         return response()->json([
             "success" => true,
             "message" => "post csv import successfully.",

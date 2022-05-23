@@ -1,12 +1,9 @@
 <?php
-use App\Models\User;
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\ForgotController;
 use App\Http\Controllers\API\PassportAuthController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,10 +15,6 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
 
 Route::get('register-page',[PassportAuthController::class,'registerPage']);
 Route::get('login-page',[PassportAuthController::class,'loginPage']);
@@ -39,6 +32,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/search', [PostController::class, 'search']);
     Route::get('export', [PostController::class, 'export']);
     Route::post('import',[PostController::class, 'import']);
-    Route::post('forgot', [ForgotController::class, 'forgot']);
     Route::post('reset', [ForgotController::class, 'reset']);
+    Route::post('forgot', [ForgotController::class, 'forgot']);
 });

@@ -38,7 +38,8 @@
                     },
                     error: function({
                         status
-                    }) {
+                    }) 
+                    {
                         if (status === 401) {
                             localStorage.removeItem("user-token");
                             window.location.href = "/api/login-page";
