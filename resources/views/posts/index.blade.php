@@ -139,15 +139,13 @@
                             description: $("#description").val(),
                         },
                         success: function(data) {
-                            console.log(data.error)
                             if (data.error) {
-
-                                $('#title-error').html(data.error.title[0]);
-                                $('#description-error').html(data.error.description[0]);
-                            }
-                            if (data.success) {
+                                $('#title-error').html(data.error.title);
+                                $('#description-error').html(data.error.description);
+                            } else {
                                 window.location = "/api/post-list"
                             }
+
                         }
                     })
                 })
@@ -182,13 +180,19 @@
                         data: {
                             title: $("#edit-title").val(),
                             description: $("#edit-description").val(),
+                        },
+                        success: function(data) {
+                            if (data) {
+                                $('#edit-title-error').html(data.error.title);
+                                $('#edit-description-error').html(data.error
+                                    .description);
+                            } else {
+                                window.location = "/api/post-list"
+                            }
                         }
-                    }).done(function() {
-                        window.location = '/api/post-list';
                     })
                 });
             })
-
 
             $(document).on('click', '.delete', function() {
                 let id = $(this).data("id");

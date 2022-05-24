@@ -34,16 +34,21 @@ class PostDao implements PostDaoInterface
 
   public function update(array $data, $post)
   {
-    $post->title = $data['title'];
-    $post->description = $data['description'];
-    $post->save();
-
+    if($post){
+      $post->title = $data['title'];
+      $post->description = $data['description'];
+      $post->save();
+    }
+    
     return $post;
   }
 
-  public function delete($id)
+  public function delete($post)
   {
-    return $this->model->delete($id);
+    if($post){
+      $post = Post::where('id',$post['id'])->delete();
+    }
+    return $post;
   }
 
   public function search($request)

@@ -12,7 +12,7 @@ interface PostServiceInterface {
 
   public function update(array $data, $post);
 
-  public function delete($id);
+  public function delete($post);
 
   public function search($request);
 

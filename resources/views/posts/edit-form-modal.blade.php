@@ -12,14 +12,18 @@
                         <label class="form-label"><Title></Title></label>
                         <input type="text" name="title" id="edit-title" class="form-control" value=""
                             placeholder="Enter Title">
-                        <small class="text-danger form-error fade" data-error="name"></small>
+                            <span class="text-danger">
+                                <strong id="edit-title-error"></strong>
+                            </span>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Description</label>
                         <input type="text" name="description" id="edit-description" class="form-control" value=""
                             placeholder="Enter description">
-                        <small class="text-danger form-error fade" data-error="description"></small>
+                            <span class="text-danger">
+                                <strong id="edit-description-error"></strong>
+                            </span>
                     </div>
                     <button class="btn btn-primary float-end" id="editFormModalButton">Update</button>
                 </form>
